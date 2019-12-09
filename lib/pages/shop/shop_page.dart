@@ -88,6 +88,10 @@ class _ShopPageState extends State<ShopPage> {
     return ListTile(
       title: Text(note['noteTime']),
       subtitle: Text(deliverNoteStatus[note['status']]),
+      trailing: note['status'] == 0?IconButton(
+        icon: Icon(Icons.delete),
+        onPressed: () => deleteNote(note),
+      ):null,
       onTap: () => this.showNoteDetail(note),
     );
   }
@@ -185,5 +189,18 @@ class _ShopPageState extends State<ShopPage> {
         null, 
         null, 
         null);
+  }
+
+  void deleteNote(note) {
+    HttpUtil().delete(context, '/note/api/note', {'noteId': "${note['id']}"},
+      (rj) {
+        toastSuccess('已删除');
+        setState(() {
+          this._shopInfo = null;
+        });
+      },
+      null,
+      null,
+      null);
   }
 }

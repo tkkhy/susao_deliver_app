@@ -51,6 +51,7 @@ enum HttpContentType {
 class HttpUtil {
   static String _get = 'GET';
   static String _post = 'POST';
+  static String _delete = 'DELETE';
 
   var _dio;
 
@@ -128,6 +129,26 @@ class HttpUtil {
       beanClass??new ResultJson());
   }
 
+  
+  void delete(
+      BuildContext context,
+      String uri, Map<String, dynamic> queryParameters,
+      Function successCallback,
+      Function failedCallback,
+      Function exceptCallback,
+      Function noLoginCallback,
+      {HttpContentType contentType=HttpContentType.json, dynamic beanClass}) async {
+    _query(context,
+      uri, queryParameters,
+      successCallback,
+      failedCallback,
+      exceptCallback,
+      noLoginCallback,
+      _delete,
+      contentType,
+      beanClass??new ResultJson());
+  }
+
   void _query(
       BuildContext context,
       String uri, Map<String, dynamic> queryParameters,
@@ -149,12 +170,14 @@ class HttpUtil {
       if (type == _get) {
         var _uri = Uri(path: uri, queryParameters: queryParameters);
         request = await _dio.getUri(_uri);
-      } else {
+      } else if (type == _post) {
         var options; 
         if (contentType == HttpContentType.from) {
           options = new Options(contentType: "application/x-www-form-urlencoded");
         }
         request = await _dio.post(uri, data: queryParameters, options: options);
+      } else {
+        request = await _dio.delete(uri, data: queryParameters);
       }
 
       dynamic rj = beanClass(request.data);
