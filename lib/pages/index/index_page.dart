@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart' as screenutil;
-import 'package:susao_deliver_app/http_utils.dart';
+import 'package:susao_deliver_app/utils/http_utils.dart';
 import 'package:susao_deliver_app/pages/loading.dart';
 import 'package:susao_deliver_app/router.dart';
 

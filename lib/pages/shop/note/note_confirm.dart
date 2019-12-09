@@ -3,7 +3,7 @@ import 'package:flustars/flustars.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:susao_deliver_app/const.dart';
-import 'package:susao_deliver_app/http_utils.dart';
+import 'package:susao_deliver_app/utils/http_utils.dart';
 import 'package:susao_deliver_app/pages/shop/note/pay_editor.dart';
 import 'package:susao_deliver_app/router.dart';
 import 'package:susao_deliver_app/utils/toast_utils.dart';
@@ -11,20 +11,27 @@ import 'package:susao_deliver_app/utils/toast_utils.dart';
 import 'note_product.dart';
 
 class NoteConfirmPage extends StatefulWidget {
+  String _noteId;
   String _shopId;
   String _shopName;
   List<ShopProduct> _shopProductList;
+  bool _isEdit;
+  PayResult _payResult;
 
-  NoteConfirmPage(this._shopId, this._shopName, this._shopProductList);
+  NoteConfirmPage(this._noteId, this._shopId, this._shopName, this._shopProductList, this._payResult, {isEdit:true}) {
+    this._isEdit = isEdit;
+  }
 
   @override
   State<StatefulWidget> createState() => _NoteConfirmState(
-    this._shopId, this._shopName, this._shopProductList
+    this._noteId, this._shopId, this._shopName, this._shopProductList, this._payResult, this._isEdit
   );
   
 }
 
 class _NoteConfirmState extends State<NoteConfirmPage> {
+  bool _isEdit;
+  String _noteId;
   String _shopId;
   String _shopName;
   List<ShopProduct> _shopProductList;
@@ -42,11 +49,11 @@ class _NoteConfirmState extends State<NoteConfirmPage> {
   PayResult _payResult;
   static final double _fontSize = ScreenUtil().getWidth(15);
 
-  _NoteConfirmState(this._shopId, this._shopName, this._shopProductList);
+  _NoteConfirmState(this._noteId, this._shopId, this._shopName, this._shopProductList,
+    this._payResult, this._isEdit);
 
   @override
   void initState() {
-    this._payResult = PayResult();
     analyseProducts();
     _bookkeepingCtl.text = '0';
     _tabs = <Tab>[
@@ -63,7 +70,7 @@ class _NoteConfirmState extends State<NoteConfirmPage> {
       length: _tabs.length,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('确认订单-' + this._shopName),
+          title: Text((this._isEdit?'确认订单-':'查看订单-') + this._shopName),
           bottom: TabBar(tabs: _tabs),
         ),
         body: Flex(
@@ -93,7 +100,7 @@ class _NoteConfirmState extends State<NoteConfirmPage> {
                     Text('退货金额：', style: TextStyle(fontSize: _fontSize),),
                     Text('${_rejectPrice.toStringAsFixed(2)}', style: TextStyle(fontSize: _fontSize),),
                   ],),
-                  PayEditor(this._payResult, this.analyseProducts),
+                  PayEditor(this._payResult, this.analyseProducts, this._isEdit),
                   Flex(
                     direction: Axis.horizontal,
                     children: <Widget>[
@@ -112,6 +119,7 @@ class _NoteConfirmState extends State<NoteConfirmPage> {
                         flex: 1,
                         child: TextField(
                           controller: _bookkeepingCtl,
+                          readOnly: !this._isEdit,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                             labelText: '记账金额',
@@ -123,6 +131,7 @@ class _NoteConfirmState extends State<NoteConfirmPage> {
                   TextField(
                     controller: _msgCtl,
                     keyboardType: TextInputType.multiline,
+                    readOnly: !this._isEdit,
                     decoration: InputDecoration(
                       labelText: '订单备注'
                     ),
@@ -130,7 +139,7 @@ class _NoteConfirmState extends State<NoteConfirmPage> {
                   Center(
                     child: RaisedButton(
                       child: Text('提交订单'),
-                      onPressed: _commitNote,
+                      onPressed: this._isEdit?_commitNote:null,
                     ),
                   )
                 ],
@@ -179,10 +188,7 @@ class _NoteConfirmState extends State<NoteConfirmPage> {
       _products.add(item.toJson());
     }
 
-    HttpUtil().post(
-      context, 
-      '/note/api/createDeliverNote',
-      {
+    var data = {
         'shopId': _shopId,
         'noteMsg': _msgCtl.text,
         'totalPrice': _totalPrice,
@@ -192,8 +198,16 @@ class _NoteConfirmState extends State<NoteConfirmPage> {
         'card': this._payResult.card??0,
         'actualPrice': double.parse(_actualPriceCtl.text),
         'bookkeeping': double.parse(_bookkeepingCtl.text),
-        'products': _products
-      },
+        'products': _products,
+    };
+    if (this._noteId != null && this._noteId != '') {
+      data['noteId'] = this._noteId;
+    }
+
+    HttpUtil().post(
+      context, 
+      '/note/api/note',
+      data,
       (rj) {
         toastSuccess('订单完成');
         Routes.router.navigateTo(context, '/shop_list');

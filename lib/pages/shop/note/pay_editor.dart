@@ -15,18 +15,29 @@ class PayResult {
     this.card = null;
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'cash': cash,
+      'weixin': weixin,
+      'zhifubao': zhifubao,
+      'card': card
+    };
+  }
+
 }
 
 
 class PayEditor extends StatefulWidget {
   PayResult _payResult;
   Function _updateCallback;
-  PayEditor(this._payResult, this._updateCallback);
+  bool _isEdit;
+  PayEditor(this._payResult, this._updateCallback, this._isEdit);
   @override
-  State<StatefulWidget> createState() => _PayEditorState(this._payResult, this._updateCallback);
+  State<StatefulWidget> createState() => _PayEditorState(this._payResult, this._updateCallback, this._isEdit);
 }
 
 class _PayEditorState extends State<PayEditor> {
+  bool _isEdit;
   PayResult _payResult;
   TextEditingController _cashCtl;
   TextEditingController _weixinCtl;
@@ -39,7 +50,7 @@ class _PayEditorState extends State<PayEditor> {
   int _zhifubaoFlex;
   int _cardFlex;
 
-  _PayEditorState(this._payResult, this._updateCallback) {
+  _PayEditorState(this._payResult, this._updateCallback, this._isEdit) {
     this._cashCtl = TextEditingController(text: this._payResult.cash?.toString());
     this._weixinCtl = TextEditingController(text: this._payResult.weixin?.toString());
     this._zhifubaoCtl = TextEditingController(text: this._payResult.zhifubao?.toString());
@@ -63,6 +74,7 @@ class _PayEditorState extends State<PayEditor> {
         Expanded(
           flex: this._cashFlex,
           child: TextField(
+            readOnly: !this._isEdit,
             controller: this._cashCtl,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
@@ -83,6 +95,7 @@ class _PayEditorState extends State<PayEditor> {
         Expanded(
           flex: this._weixinFlex,
           child: TextField(
+            readOnly: !this._isEdit,
             controller: this._weixinCtl,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
@@ -103,6 +116,7 @@ class _PayEditorState extends State<PayEditor> {
         Expanded(
           flex: this._zhifubaoFlex,
           child: TextField(
+            readOnly: !this._isEdit,
             controller: this._zhifubaoCtl,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
@@ -123,6 +137,7 @@ class _PayEditorState extends State<PayEditor> {
         Expanded(
           flex: this._cardFlex,
           child: TextField(
+            readOnly: !this._isEdit,
             controller: this._cardCtl,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(

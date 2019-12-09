@@ -4,25 +4,32 @@ import 'package:flustars/flustars.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:susao_deliver_app/const.dart';
-import 'package:susao_deliver_app/http_utils.dart';
+import 'package:susao_deliver_app/utils/http_utils.dart';
 import 'package:susao_deliver_app/pages/loading.dart';
+import 'package:susao_deliver_app/pages/shop/note/pay_editor.dart';
 import 'package:susao_deliver_app/router.dart';
 
 import 'note_product.dart';
 
 class CommonNotePage extends StatefulWidget {
-  String _shopId;
-  String _shopName;
-
-  CommonNotePage(this._shopId, this._shopName);
-  @override
-  State<StatefulWidget> createState() => _CommonNoteState(this._shopId, this._shopName);
-}
-
-class _CommonNoteState extends State<CommonNotePage> {
+  String _noteId;
   String _shopId;
   String _shopName;
   List<ShopProduct> _shopProductList;
+  PayResult _payResult;
+
+  CommonNotePage(this._noteId, this._shopId, this._shopName, this._shopProductList, this._payResult);
+  @override
+  State<StatefulWidget> createState() => _CommonNoteState(this._noteId, 
+    this._shopId, this._shopName, this._shopProductList, this._payResult);
+}
+
+class _CommonNoteState extends State<CommonNotePage> {
+  String _noteId;
+  String _shopId;
+  String _shopName;
+  List<ShopProduct> _shopProductList;
+  PayResult _payResult;
   double _totalPrice;
   double _deliverPrice;
   double _rejectPrice;
@@ -31,7 +38,8 @@ class _CommonNoteState extends State<CommonNotePage> {
     new Tab(text: '退货单')
   ];
 
-  _CommonNoteState(this._shopId, this._shopName) {
+  _CommonNoteState(this._noteId, this._shopId, this._shopName,
+    this._shopProductList, this._payResult) {
     this._totalPrice = 0;
     this._deliverPrice = 0;
     this._rejectPrice = 0;
@@ -60,7 +68,7 @@ class _CommonNoteState extends State<CommonNotePage> {
       length: _tabs.length,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('订单系统-' + _shopName),
+          title: Text(((this._noteId==null)?'订单系统-':'修改订单-') + _shopName),
           bottom: TabBar(
             tabs: _tabs,
           ),
@@ -82,7 +90,7 @@ class _CommonNoteState extends State<CommonNotePage> {
             ShopProduct _sp = new ShopProduct();
             _sp.shopId = _shopId;
             _sp.productId = _product['product']['id'].toString();
-            _sp.shopProductId = _product['id'].toString();
+            // _sp.shopProductId = _product['id'].toString();
             _sp.productName = _product['product']['name'];
             _sp.price = double.parse(_product['price']);
             _shopProductList.add(_sp);
@@ -129,9 +137,13 @@ class _CommonNoteState extends State<CommonNotePage> {
                   child: Text('下单'),
                   onPressed: () {
                     // _commitNote();
-                    Routes.router.navigateTo(context, '/shop/note/confirm?' 
+                    String _url = '/shop/note/confirm?'
                       + 'shopId=$_shopId&shopName=${Uri.encodeComponent(_shopName)}'
-                      + '&products=${Uri.encodeComponent(jsonEncode(_shopProductList))}');
+                      + '&products=${Uri.encodeComponent(jsonEncode(_shopProductList))}';
+                    if (this._noteId != null) {
+                      _url += '&noteId=${this._noteId}';
+                    }
+                    Routes.router.navigateTo(context, _url);
                   },
                 )
               ],

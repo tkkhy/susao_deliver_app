@@ -9,7 +9,7 @@ import 'package:susao_deliver_app/const.dart';
 class ShopProduct {
   String shopId;
   String productId;
-  String shopProductId;
+  // String shopProductId;
   String productName;
   double price;
   List<int> num = [0, 0, 0];
@@ -18,7 +18,7 @@ class ShopProduct {
     return {
       'shopId': shopId,
       'productId': productId,
-      'shopProductId': shopProductId,
+      // 'shopProductId': shopProductId,
       'productName': productName,
       'price': price,
       'deliverNum': num[0],

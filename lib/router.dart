@@ -5,6 +5,7 @@ import 'package:susao_deliver_app/const.dart';
 import 'package:susao_deliver_app/pages/shop/note/note_confirm.dart';
 import 'package:susao_deliver_app/pages/shop/note/note_edit.dart';
 import 'package:susao_deliver_app/pages/shop/note/note_product.dart';
+import 'package:susao_deliver_app/pages/shop/note/pay_editor.dart';
 import 'package:susao_deliver_app/pages/shop/shop_page.dart';
 
 import 'pages/404.dart';
@@ -31,11 +32,37 @@ class Routes {
       return ShopPage(shopId, shopName);
     }));
     router.define('/shop/note', handler: Handler(handlerFunc: (context, params) {
+      String noteId = params['noteId']?.first;
       var shopId = params['shopId']?.first;
       var shopName = params['shopName']?.first;
-      return CommonNotePage(shopId, shopName);
+      
+      var joProducts = jsonDecode(params['products']?.first);
+      List<ShopProduct> products = new List();
+      for (var jo in joProducts) {
+        ShopProduct p = new ShopProduct();
+        p.shopId = jo['shopId'];
+        p.productId = jo['productId'];
+        // p.shopProductId = jo['shopProductId'];
+        p.productName = jo['productName'];
+        p.price = jo['price'];
+        p.num = [jo['deliverNum'], jo['rejectNum'], jo['giftNum']];
+        products.add(p);
+      }
+
+      PayResult payResult = new PayResult();
+      String strPayResult = params['payResult']?.first;
+      if (strPayResult != null) {
+        var joPayResult = jsonDecode(strPayResult);
+        payResult.cash = joPayResult['cash'];
+        payResult.weixin = joPayResult['weixin'];
+        payResult.zhifubao = joPayResult['zhifubao'];
+        payResult.card = joPayResult['card'];
+      }
+      return CommonNotePage(noteId, shopId, shopName, products, payResult);
     }));
     router.define('/shop/note/confirm', handler: Handler(handlerFunc: (context, params) {
+      String noteId = params['noteId']?.first;
+      bool isEdit = (params['isEdit']?.first) == 'false'?false:true;
       var shopId = params['shopId']?.first;
       var shopName = params['shopName']?.first;
       var joProducts = jsonDecode(params['products']?.first);
@@ -44,13 +71,23 @@ class Routes {
         ShopProduct p = new ShopProduct();
         p.shopId = jo['shopId'];
         p.productId = jo['productId'];
-        p.shopProductId = jo['shopProductId'];
+        // p.shopProductId = jo['shopProductId'];
         p.productName = jo['productName'];
         p.price = jo['price'];
         p.num = [jo['deliverNum'], jo['rejectNum'], jo['giftNum']];
         products.add(p);
       }
-      return NoteConfirmPage(shopId, shopName, products);
+
+      PayResult payResult = new PayResult();
+      String strPayResult = params['payResult']?.first;
+      if (strPayResult != null) {
+        var joPayResult = jsonDecode(strPayResult);
+        payResult.cash = joPayResult['cash'];
+        payResult.weixin = joPayResult['weixin'];
+        payResult.zhifubao = joPayResult['zhifubao'];
+        payResult.card = joPayResult['card'];
+      }
+      return NoteConfirmPage(noteId, shopId, shopName, products, payResult, isEdit: isEdit,);
     }));
   }
 

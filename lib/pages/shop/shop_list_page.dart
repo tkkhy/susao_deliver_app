@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_baidu_map/flutter_baidu_map.dart';
 import 'package:geo/geo.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:susao_deliver_app/http_utils.dart';
+import 'package:susao_deliver_app/utils/http_utils.dart';
 import 'package:susao_deliver_app/pages/loading.dart';
 import 'package:susao_deliver_app/router.dart';
 

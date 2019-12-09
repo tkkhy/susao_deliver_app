@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:flustars/flustars.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:susao_deliver_app/const.dart';
-import 'package:susao_deliver_app/http_utils.dart';
+import 'package:susao_deliver_app/pages/shop/note/pay_editor.dart';
+import 'package:susao_deliver_app/utils/http_utils.dart';
+import 'package:susao_deliver_app/pages/shop/note/note_product.dart';
 import 'package:susao_deliver_app/router.dart';
 import 'package:susao_deliver_app/utils/toast_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -71,9 +75,7 @@ class _ShopPageState extends State<ShopPage> {
               ),
               RaisedButton(
                 child: Text('创建订单'),
-                onPressed: (){
-                  Routes.router.navigateTo(context, '/shop/note?shopId=$_shopId&shopName=${Uri.encodeComponent(_shopName)}');
-                },
+                onPressed: () => this.createNote(),
               ),
             ],
           ),
@@ -86,7 +88,7 @@ class _ShopPageState extends State<ShopPage> {
     return ListTile(
       title: Text(note['noteTime']),
       subtitle: Text(deliverNoteStatus[note['status']]),
-      onTap: (){},
+      onTap: () => this.showNoteDetail(note),
     );
   }
   
@@ -112,5 +114,76 @@ class _ShopPageState extends State<ShopPage> {
       LogUtil.e(ee);
       toastError('导航异常');
     }
+  }
+
+
+  void showNoteDetail(note) {
+    HttpUtil().get(context, '/note/api/note', {'noteId': "${note['id']}"},
+      (rj) {
+        var joProducts = rj.result['products'];
+        List shopProductList = new List<ShopProduct>();
+        for (var _product in joProducts) {
+          ShopProduct _sp = new ShopProduct();
+          _sp.shopId = _shopId;
+          _sp.productId = _product['product']['id'].toString();
+          // _sp.shopProductId = _product['id'].toString();
+          _sp.productName = _product['product']['name'];
+          _sp.price = double.parse(_product['price']);
+          _sp.num = [_product['deliverNum']??0, _product['rejectNum']??0, _product['giftNum']??0];
+          shopProductList.add(_sp);
+        }
+
+        PayResult payResult = new PayResult();
+        var joNote = rj.result['note'];
+        payResult.cash = (joNote['cash'] == null || double.parse(joNote['cash']) <= 0)?null:double.parse(joNote['cash']);
+        payResult.weixin = (joNote['weixin'] == null || double.parse(joNote['weixin']) <= 0)?null:double.parse(joNote['weixin']);
+        payResult.zhifubao = (joNote['zhifubao'] == null || double.parse(joNote['zhifubao']) <= 0)?null:double.parse(joNote['zhifubao']);
+        payResult.card = (joNote['card'] == null || double.parse(joNote['card']) <= 0)?null:double.parse(joNote['card']);
+        if (note['status'] == 0) {
+          Routes.router.navigateTo(context, '/shop/note?'
+            + 'shopId=$_shopId'
+            + '&shopName=${Uri.encodeComponent(_shopName)}'
+            + '&noteId=${note["id"]}'
+            + '&products=${Uri.encodeComponent(jsonEncode(shopProductList))}'
+            + '&payResult=${Uri.encodeComponent(jsonEncode(payResult))}');
+        } else {
+          Routes.router.navigateTo(context, '/shop/note/confirm?'
+            + 'shopId=$_shopId'
+            + '&shopName=${Uri.encodeComponent(_shopName)}'
+            + '&noteId=${note["id"]}'
+            + '&products=${Uri.encodeComponent(jsonEncode(shopProductList))}'
+            + '&payResult=${Uri.encodeComponent(jsonEncode(payResult))}'
+            + '&isEdit=false');
+        }
+      },
+      null,
+      null,
+      null);   
+  }
+
+  void createNote() {
+      HttpUtil().get(
+        context, 
+        '/shop/api/getShopProductList', 
+        {'shopId': _shopId}, 
+        (rj) {
+          List _shopProductList = new List<ShopProduct>();
+          for (var _product in rj.result) {
+            ShopProduct _sp = new ShopProduct();
+            _sp.shopId = _shopId;
+            _sp.productId = _product['product']['id'].toString();
+            // _sp.shopProductId = _product['id'].toString();
+            _sp.productName = _product['product']['name'];
+            _sp.price = double.parse(_product['price']);
+            _shopProductList.add(_sp);
+          }
+          Routes.router.navigateTo(context, '/shop/note?'
+            + 'shopId=$_shopId'
+            + '&shopName=${Uri.encodeComponent(_shopName)}'
+            + '&products=${Uri.encodeComponent(jsonEncode(_shopProductList))}');
+        }, 
+        null, 
+        null, 
+        null);
   }
 }
