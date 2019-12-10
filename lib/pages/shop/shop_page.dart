@@ -4,6 +4,7 @@ import 'package:flustars/flustars.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:susao_deliver_app/const.dart';
+import 'package:susao_deliver_app/pages/loading.dart';
 import 'package:susao_deliver_app/pages/shop/note/pay_editor.dart';
 import 'package:susao_deliver_app/utils/http_utils.dart';
 import 'package:susao_deliver_app/pages/shop/note/note_product.dart';
@@ -43,6 +44,71 @@ class _ShopPageState extends State<ShopPage> {
       for (var _note in _shopInfo.result['notes']) {
         notes.add(_buildNoteView(_note));
       }
+      return Flex(
+        direction: Axis.vertical,
+        children: <Widget>[
+          Expanded(
+            flex: 1,
+            child: ListView(
+              children: <Widget>[
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Text('地址：'),
+                          Text("${((this._shopInfo)?.result['shop']['address'])??''}", softWrap: true, maxLines: 2,)
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Text('联系人：'),
+                          Text("${((this._shopInfo)?.result['shop']['contact'])??''}")
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Text('联系电话：'),
+                          Text("${((this._shopInfo)?.result['shop']['phoneNumber'])??''}")
+                        ],
+                      ),
+                    ],
+                  ),
+                )
+              ]
+            ),
+          ),
+          Expanded(
+            flex: 7,
+            child: ListView(
+              children: notes,
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                RaisedButton(
+                  child: Text('导航'),
+                  onPressed: () {
+                    _navigateToShop();
+                  },
+                ),
+                RaisedButton(
+                  child: Text('创建订单'),
+                  onPressed: () => this.createNote(),
+                ),
+              ],
+            ),
+          )
+        ],
+      );
     } else {
       HttpUtil().get(context, '/note/api/getShopWithNoteList', {'shopId': this._shopId},
         (rj) {
@@ -53,35 +119,7 @@ class _ShopPageState extends State<ShopPage> {
         null,
         null);
     }
-    return Flex(
-      direction: Axis.vertical,
-      children: <Widget>[
-        Expanded(
-          flex: 9,
-          child: ListView(
-            children: notes,
-          ),
-        ),
-        Expanded(
-          flex: 1,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              RaisedButton(
-                child: Text('导航'),
-                onPressed: () {
-                  _navigateToShop();
-                },
-              ),
-              RaisedButton(
-                child: Text('创建订单'),
-                onPressed: () => this.createNote(),
-              ),
-            ],
-          ),
-        )
-      ],
-    );
+    return loadingBox();
   }
 
   Widget _buildNoteView(note) {

@@ -140,7 +140,7 @@ class IndexState extends State<IndexPage> {
       passengers += pn['name'] + ',';
     }
 
-    return Column(
+    var col = Column(
       children: <Widget>[
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -165,5 +165,10 @@ class IndexState extends State<IndexPage> {
         ),
       ],
     );
+    return ListTile(
+      title: col,
+      onTap: () {
+        Routes.router.navigateTo(context, '/shop_list?planId=${plan['id'].toString()}&planName=${Uri.encodeComponent(plan['name'])}');
+      },);
   }
 }
