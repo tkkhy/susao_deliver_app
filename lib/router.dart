@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:fluro/fluro.dart';
 import 'package:susao_deliver_app/const.dart';
+import 'package:susao_deliver_app/pages/shop/new_shop_page.dart';
 import 'package:susao_deliver_app/pages/shop/note/note_confirm.dart';
 import 'package:susao_deliver_app/pages/shop/note/note_edit.dart';
 import 'package:susao_deliver_app/pages/shop/note/note_product.dart';
@@ -21,6 +22,7 @@ class Routes {
 
     router.define('/login', handler: Handler(handlerFunc: (context, params) => LoginPage()));
     router.define('/index', handler: Handler(handlerFunc: (context, params) => IndexPage()));
+    router.define('/shop/create', handler: Handler(handlerFunc: (context, params) => NewShopPage()));
     router.define('/shop_list', handler: Handler(handlerFunc: (context, params) {
       var planId = params['planId']?.first;
       var planName = params['planName']?.first;
@@ -39,14 +41,13 @@ class Routes {
       var joProducts = jsonDecode(params['products']?.first);
       List<ShopProduct> products = new List();
       for (var jo in joProducts) {
-        ShopProduct p = new ShopProduct();
-        p.shopId = jo['shopId'];
-        p.productId = jo['productId'];
-        // p.shopProductId = jo['shopProductId'];
-        p.productName = jo['productName'];
-        p.price = jo['price'];
-        p.num = [jo['deliverNum'], jo['rejectNum'], jo['giftNum']];
-        products.add(p);
+        products.add(ShopProduct.fromJson(jo));
+      }
+
+      var joOtherProducts = jsonDecode(params['others']?.first);
+      List<ShopProduct> others = new List();
+      for (var jo in joOtherProducts) {
+        others.add(ShopProduct.fromJson(jo));
       }
 
       PayResult payResult = new PayResult();
@@ -58,7 +59,7 @@ class Routes {
         payResult.zhifubao = joPayResult['zhifubao'];
         payResult.card = joPayResult['card'];
       }
-      return CommonNotePage(noteId, shopId, shopName, products, payResult);
+      return CommonNotePage(noteId, shopId, shopName, products, others, payResult);
     }));
     router.define('/shop/note/confirm', handler: Handler(handlerFunc: (context, params) {
       String noteId = params['noteId']?.first;
@@ -68,14 +69,7 @@ class Routes {
       var joProducts = jsonDecode(params['products']?.first);
       List<ShopProduct> products = new List();
       for (var jo in joProducts) {
-        ShopProduct p = new ShopProduct();
-        p.shopId = jo['shopId'];
-        p.productId = jo['productId'];
-        // p.shopProductId = jo['shopProductId'];
-        p.productName = jo['productName'];
-        p.price = jo['price'];
-        p.num = [jo['deliverNum'], jo['rejectNum'], jo['giftNum']];
-        products.add(p);
+        products.add(ShopProduct.fromJson(jo));
       }
 
       PayResult payResult = new PayResult();

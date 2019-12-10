@@ -127,14 +127,7 @@ class _ShopPageState extends State<ShopPage> {
         var joProducts = rj.result['products'];
         List shopProductList = new List<ShopProduct>();
         for (var _product in joProducts) {
-          ShopProduct _sp = new ShopProduct();
-          _sp.shopId = _shopId;
-          _sp.productId = _product['product']['id'].toString();
-          // _sp.shopProductId = _product['id'].toString();
-          _sp.productName = _product['product']['name'];
-          _sp.price = double.parse(_product['price']);
-          _sp.num = [_product['deliverNum']??0, _product['rejectNum']??0, _product['giftNum']??0];
-          shopProductList.add(_sp);
+          shopProductList.add(ShopProduct.fromJson(_product));
         }
 
         PayResult payResult = new PayResult();
@@ -172,20 +165,32 @@ class _ShopPageState extends State<ShopPage> {
         {'shopId': _shopId}, 
         (rj) {
           List _shopProductList = new List<ShopProduct>();
-          for (var _product in rj.result) {
-            ShopProduct _sp = new ShopProduct();
-            _sp.shopId = _shopId;
-            _sp.productId = _product['product']['id'].toString();
-            // _sp.shopProductId = _product['id'].toString();
-            _sp.productName = _product['product']['name'];
-            _sp.price = double.parse(_product['price']);
-            _shopProductList.add(_sp);
+          for (var _product in rj.result['shopProducts']) {
+            _shopProductList.add(ShopProduct.fromJson({
+              'shopId': _shopId,
+              'productId': _product['product']['id'].toString(),
+              'productName': _product['product']['name'],
+              'price': double.parse(_product['price']),
+              'type': 1
+            }));
           }
+          List _otherProductList = new List<ShopProduct>();
+          for (var _product in rj.result['otherProducts']) {
+            _otherProductList.add(ShopProduct.fromJson({
+              'shopId': _shopId,
+              'productId': _product['id'].toString(),
+              'productName': _product['name'],
+              'price': double.parse(_product['price']),
+              'type': 0
+            }));
+          }
+
           Routes.router.navigateTo(context, '/shop/note?'
             + 'shopId=$_shopId'
             + '&shopName=${Uri.encodeComponent(_shopName)}'
-            + '&products=${Uri.encodeComponent(jsonEncode(_shopProductList))}');
-        }, 
+            + '&products=${Uri.encodeComponent(jsonEncode(_shopProductList))}'
+            + '&others=${Uri.encodeComponent(jsonEncode(_otherProductList))}');
+        },
         null, 
         null, 
         null);

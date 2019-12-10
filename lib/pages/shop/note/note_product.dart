@@ -12,6 +12,7 @@ class ShopProduct {
   // String shopProductId;
   String productName;
   double price;
+  int type; // 0-临时商品 1-商家商品
   List<int> num = [0, 0, 0];
 
   Map<String, dynamic> toJson() {
@@ -21,10 +22,26 @@ class ShopProduct {
       // 'shopProductId': shopProductId,
       'productName': productName,
       'price': price,
+      'type': type,
       'deliverNum': num[0],
       'rejectNum': num[1],
       'giftNum': num[2],
     };
+  }
+
+  int _cvtNum(n) {
+    return n??0;
+  }
+
+  ShopProduct.fromJson(Map<String, dynamic> data) {
+    this.shopId = data['shopId'];
+    this.productId = data['productId'];
+    this.productName = data['productName'];
+    this.price = data['price'];
+    this.type = data['type'];
+    this.num[0] = _cvtNum(data['deliverNum']);
+    this.num[1] = _cvtNum(data['rejectNum']);
+    this.num[2] = _cvtNum(data['giftNum']);
   }
 }
 

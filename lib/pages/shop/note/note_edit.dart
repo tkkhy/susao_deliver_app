@@ -16,12 +16,15 @@ class CommonNotePage extends StatefulWidget {
   String _shopId;
   String _shopName;
   List<ShopProduct> _shopProductList;
+  List<ShopProduct> _otherProductList;
   PayResult _payResult;
 
-  CommonNotePage(this._noteId, this._shopId, this._shopName, this._shopProductList, this._payResult);
+  CommonNotePage(this._noteId, this._shopId, this._shopName, 
+    this._shopProductList, this._otherProductList, this._payResult);
   @override
   State<StatefulWidget> createState() => _CommonNoteState(this._noteId, 
-    this._shopId, this._shopName, this._shopProductList, this._payResult);
+    this._shopId, this._shopName, this._shopProductList, 
+    this._otherProductList, this._payResult);
 }
 
 class _CommonNoteState extends State<CommonNotePage> {
@@ -29,6 +32,7 @@ class _CommonNoteState extends State<CommonNotePage> {
   String _shopId;
   String _shopName;
   List<ShopProduct> _shopProductList;
+  List<ShopProduct> _otherProductList;
   PayResult _payResult;
   double _totalPrice;
   double _deliverPrice;
@@ -39,7 +43,7 @@ class _CommonNoteState extends State<CommonNotePage> {
   ];
 
   _CommonNoteState(this._noteId, this._shopId, this._shopName,
-    this._shopProductList, this._payResult) {
+    this._shopProductList, this._otherProductList, this._payResult) {
     this._totalPrice = 0;
     this._deliverPrice = 0;
     this._rejectPrice = 0;
@@ -87,13 +91,7 @@ class _CommonNoteState extends State<CommonNotePage> {
         (rj) {
           _shopProductList = new List();
           for (var _product in rj.result) {
-            ShopProduct _sp = new ShopProduct();
-            _sp.shopId = _shopId;
-            _sp.productId = _product['product']['id'].toString();
-            // _sp.shopProductId = _product['id'].toString();
-            _sp.productName = _product['product']['name'];
-            _sp.price = double.parse(_product['price']);
-            _shopProductList.add(_sp);
+            _shopProductList.add(ShopProduct.fromJson(_product));
           }
           setState(() {});
         }, 

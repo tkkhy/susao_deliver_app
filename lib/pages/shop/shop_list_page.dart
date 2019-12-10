@@ -3,10 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_baidu_map/flutter_baidu_map.dart';
 import 'package:geo/geo.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:susao_deliver_app/utils/http_utils.dart';
 import 'package:susao_deliver_app/pages/loading.dart';
 import 'package:susao_deliver_app/router.dart';
+import 'package:susao_deliver_app/utils/location_utils.dart';
 
 class ShopListPage extends StatefulWidget {
   var planId;
@@ -37,7 +37,9 @@ class ShopListState extends State<ShopListPage> {
       body: _buildBody(),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: () {},
+        onPressed: () {
+          Routes.router.navigateTo(context, '/shop/create');
+        },
       ),
     );
   }
@@ -97,20 +99,5 @@ class ShopListState extends State<ShopListPage> {
       );
 
     }
-  }
-
-  Future<BaiduLocation> getLocation() async {
-    PermissionStatus permission = await PermissionHandler().checkPermissionStatus(PermissionGroup.location);
-    bool hasPermission = permission == PermissionStatus.granted;
-    if(!hasPermission){
-        Map<PermissionGroup, PermissionStatus> map = await PermissionHandler().requestPermissions([
-            PermissionGroup.location
-        ]);
-        if(map.values.toList()[0] != PermissionStatus.granted){
-            return null;
-        }
-    }
-    BaiduLocation location = await FlutterBaiduMap.getCurrentLocation();
-    return location;
   }
 }
