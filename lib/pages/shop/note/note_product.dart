@@ -9,7 +9,6 @@ import 'package:susao_deliver_app/const.dart';
 class ShopProduct {
   String shopId;
   String productId;
-  // String shopProductId;
   String productName;
   double price;
   int type; // 0-临时商品 1-商家商品
@@ -50,11 +49,10 @@ class NoteProdectEditView extends StatefulWidget {
   Function _calcTotalPrice;
   NoteProductType _noteProductType;
   bool _isEdit;
-  bool _isPriceEdit;
-  NoteProdectEditView(this._shopProduct, this._calcTotalPrice, this._noteProductType, this._isEdit, this._isPriceEdit);
+  NoteProdectEditView(this._shopProduct, this._calcTotalPrice, this._noteProductType, this._isEdit);
   @override
   State<StatefulWidget> createState() => _NoteProductEditState(
-    this._shopProduct, this._calcTotalPrice, this._noteProductType, this._isEdit, this._isPriceEdit);
+    this._shopProduct, this._calcTotalPrice, this._noteProductType, this._isEdit);
 }
 
 class _NoteProductEditState extends State<NoteProdectEditView> {
@@ -64,9 +62,8 @@ class _NoteProductEditState extends State<NoteProdectEditView> {
   TextEditingController _numCtl;
   TextEditingController _priceCtl;
   bool _isEdit;
-  bool _isPriceEdit;
 
-  _NoteProductEditState(this._shopProduct, this._calcTotalPrice, this._noteProductType, this._isEdit, this._isPriceEdit) {
+  _NoteProductEditState(this._shopProduct, this._calcTotalPrice, this._noteProductType, this._isEdit) {
     this._numCtl = TextEditingController(text: this._shopProduct.num[_noteProductType.index].toString());
     this._priceCtl = TextEditingController(text: this._shopProduct.price.toString());
   }
@@ -100,13 +97,14 @@ class _NoteProductEditState extends State<NoteProdectEditView> {
                       Text(_shopProduct.productName),
                       // Text('单价: ${_shopProduct.price.toStringAsFixed(2)}'),
                       SizedBox(
-                        width: ScreenUtil().getWidth(100),
+                        width: ScreenUtil().getWidth(160),
                         child: TextField(
                           controller: this._priceCtl,
                           decoration: InputDecoration(
-                            prefixText: '单价：'
+                            prefixText: '单价：',
+                            suffixIcon:  (this._shopProduct.type == 1)?null:Icon(Icons.edit)
                           ),
-                          readOnly: !this._isPriceEdit,
+                          readOnly: !this._isEdit || (this._shopProduct.type == 1),
                           onChanged: (val) {
                             _shopProduct.price = double.parse(val);
                             _calcTotalPrice();
@@ -169,14 +167,12 @@ class NoteProdecEditListView extends StatefulWidget {
   Function _calcTotalPrice;
   NoteProductType _noteProductType;
   bool _isEdit;
-  bool _isPriceEdit;
-  NoteProdecEditListView(this._shopProductList, this._calcTotalPrice, this._noteProductType, {bool isEdit: true, bool isPriceEdit: false}) {
+  NoteProdecEditListView(this._shopProductList, this._calcTotalPrice, this._noteProductType, {bool isEdit: true}) {
     this._isEdit = isEdit;
-    this._isPriceEdit = isPriceEdit;
   }
   @override
   State<StatefulWidget> createState() => _NoteProdectEditListState(
-    this._shopProductList, this._calcTotalPrice, this._noteProductType, this._isEdit, this._isPriceEdit);
+    this._shopProductList, this._calcTotalPrice, this._noteProductType, this._isEdit);
 }
 
 class _NoteProdectEditListState extends State<NoteProdecEditListView> {
@@ -184,8 +180,7 @@ class _NoteProdectEditListState extends State<NoteProdecEditListView> {
   Function _calcTotalPrice;
   NoteProductType _noteProductType;
   bool _isEdit;
-  bool _isPriceEdit;
-  _NoteProdectEditListState(this._shopProductList, this._calcTotalPrice, this._noteProductType, this._isEdit, this._isPriceEdit);
+  _NoteProdectEditListState(this._shopProductList, this._calcTotalPrice, this._noteProductType, this._isEdit);
 
   @override
   Widget build(BuildContext context) {
@@ -193,14 +188,15 @@ class _NoteProdectEditListState extends State<NoteProdecEditListView> {
       decoration: BoxDecoration(
         border: Border.all(width: 1, color: Colors.grey)
       ),
+      
       child: ListView.builder(
         padding: EdgeInsets.all(10.0),
         itemCount: _shopProductList.length,
         // separatorBuilder: (context, index) => Divider(height: 1,),
-        itemBuilder: (context, index)
-        {
+        itemBuilder: (context, index) {
           if (!_isEdit && _shopProductList[index].num[this._noteProductType.index] <= 0) return null;
-          return NoteProdectEditView(_shopProductList[index], _calcTotalPrice, this._noteProductType, this._isEdit, this._isPriceEdit);
+          return NoteProdectEditView(_shopProductList[index], _calcTotalPrice, 
+            this._noteProductType, this._isEdit);
         },
       ),
     );

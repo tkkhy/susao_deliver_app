@@ -44,7 +44,7 @@ class Routes {
         products.add(ShopProduct.fromJson(jo));
       }
 
-      var joOtherProducts = jsonDecode(params['others']?.first);
+      var joOtherProducts = jsonDecode((params['others']?.first)??'[]');
       List<ShopProduct> others = new List();
       for (var jo in joOtherProducts) {
         others.add(ShopProduct.fromJson(jo));

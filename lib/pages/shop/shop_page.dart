@@ -127,7 +127,16 @@ class _ShopPageState extends State<ShopPage> {
         var joProducts = rj.result['products'];
         List shopProductList = new List<ShopProduct>();
         for (var _product in joProducts) {
-          shopProductList.add(ShopProduct.fromJson(_product));
+          shopProductList.add(ShopProduct.fromJson({
+              'shopId': _shopId,
+              'productId': _product['product']['id'].toString(),
+              'productName': _product['product']['name'],
+              'price': double.parse(_product['price']),
+              'type': 1,
+              'deliverNum': _product['deliverNum'],
+              'rejectNum': _product['rejectNum'],
+              'giftNum': _product['giftNum']
+            }));
         }
 
         PayResult payResult = new PayResult();

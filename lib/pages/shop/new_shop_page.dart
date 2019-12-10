@@ -14,6 +14,7 @@ class NewShopPage extends StatefulWidget {
 class _NewShopState extends State<NewShopPage> {
   TextEditingController _shopNameCtl = new TextEditingController();
   TextEditingController _shopLocationCtl = new TextEditingController();
+  TextEditingController _shopContactCtl = new TextEditingController();
   TextEditingController _shopPhoneNumberCtl = new TextEditingController();
   double _latitude;
   double _longitude;
@@ -25,8 +26,7 @@ class _NewShopState extends State<NewShopPage> {
       appBar: AppBar(
         title: Text('新增临时客户'),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
+      body: ListView(
         children: <Widget>[
           TextField(
             controller: this._shopNameCtl,
@@ -45,6 +45,13 @@ class _NewShopState extends State<NewShopPage> {
                 icon: Icon(Icons.location_on),
                 onPressed: getShopLocation,
               )
+            ),
+          ),
+          TextField(
+            controller: this._shopContactCtl,
+            keyboardType: TextInputType.text,
+            decoration: InputDecoration(
+              labelText: '联系人'
             ),
           ),
           TextField(
@@ -80,7 +87,9 @@ class _NewShopState extends State<NewShopPage> {
         'longitude': _longitude,
         'latitude': _latitude,
         'address': _shopLocationCtl.text,
-        'shopType': '0'
+        'shopType': '0',
+        'contact': _shopContactCtl.text,
+        'phoneNumber': _shopPhoneNumberCtl.text
       }, 
       (rj) {
         Routes.router.navigateTo(context, '/shop?shopId=${rj.result['id'].toString()}'

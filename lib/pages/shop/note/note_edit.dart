@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flustars/flustars.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:select_dialog/select_dialog.dart';
 import 'package:susao_deliver_app/const.dart';
 import 'package:susao_deliver_app/utils/http_utils.dart';
 import 'package:susao_deliver_app/pages/loading.dart';
@@ -76,9 +77,35 @@ class _CommonNoteState extends State<CommonNotePage> {
           bottom: TabBar(
             tabs: _tabs,
           ),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.add_shopping_cart),
+              onPressed: () {
+                addOtherProduct(context);
+              },
+            )
+          ],
         ),
         body: _buildBody(),
       ),
+    );
+  }
+
+  
+  void addOtherProduct(BuildContext context) {
+    SelectDialog.showModal<String>(context,
+      label: '选择客户',
+      items: List.generate(_otherProductList.length, (index) {
+        return '$index.${_otherProductList[index].productName}';
+      }),
+      onChange: (String selected) {
+        int index = int.parse(selected.substring(0,selected.indexOf('.')));
+        setState(() {
+          ShopProduct sp = _otherProductList.removeAt(index);
+          // _shopProductList.insert(0, sp);
+          _shopProductList.add(sp);
+        });
+      }
     );
   }
 
@@ -150,6 +177,5 @@ class _CommonNoteState extends State<CommonNotePage> {
         ],
       );
     }
-  }
-  
+  } 
 }
