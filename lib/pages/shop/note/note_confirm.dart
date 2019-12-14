@@ -57,15 +57,24 @@ class _NoteConfirmState extends State<NoteConfirmPage> {
     analyseProducts();
     _bookkeepingCtl.text = '0';
     _tabs = <Tab>[
-      new Tab(child: Badge(badgeContent: Text('$_deliverNum'), child: Text('送货单'), badgeColor: Colors.orange,),),
-      new Tab(child: Badge(badgeContent: Text('$_rejectNum'), child: Text('退货单'), badgeColor: Colors.orange,),),
-      new Tab(child: Badge(badgeContent: Text('$_giftNum'), child: Text('搭赠单'), badgeColor: Colors.orange,),),
+      Tab(child: Badge(badgeContent: Text('$_deliverNum'), child: Text('送货单'), badgeColor: Colors.orange,),),
+      Tab(child: Badge(badgeContent: Text('$_rejectNum'), child: Text('退货单'), badgeColor: Colors.orange,),),
     ];
+    
+    if (_giftNum> 0) _tabs.add(Tab(child: Badge(badgeContent: Text('$_giftNum'), child: Text('搭赠单'), badgeColor: Colors.orange,),));
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    List<NoteProdecEditListView> _tabPages = <NoteProdecEditListView>[
+      NoteProdecEditListView(_shopProductList, analyseProducts, NoteProductType.values[0], isEdit: false,),
+      NoteProdecEditListView(_shopProductList, analyseProducts, NoteProductType.values[1], isEdit: false,),
+    ];
+    if (this._giftNum > 0) {
+      _tabPages.add(NoteProdecEditListView(_shopProductList, analyseProducts, NoteProductType.values[2], isEdit: false,));
+    }
+
     return DefaultTabController(
       length: _tabs.length,
       child: Scaffold(
@@ -79,11 +88,7 @@ class _NoteConfirmState extends State<NoteConfirmPage> {
             Expanded(
               flex: 5,
               child: TabBarView(
-                children: <Widget>[
-                  NoteProdecEditListView(_shopProductList, analyseProducts, NoteProductType.values[0], isEdit: false,),
-                  NoteProdecEditListView(_shopProductList, analyseProducts, NoteProductType.values[1], isEdit: false,),
-                  NoteProdecEditListView(_shopProductList, analyseProducts, NoteProductType.values[2], isEdit: false,),
-                ],
+                children: _tabPages
               )
             ),
             Expanded(

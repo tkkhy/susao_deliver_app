@@ -7,7 +7,7 @@ import 'package:susao_deliver_app/const.dart';
 
 
 class ShopProduct {
-  String shopId;
+  // String shopId;
   String productId;
   String productName;
   double price;
@@ -16,7 +16,7 @@ class ShopProduct {
 
   Map<String, dynamic> toJson() {
     return {
-      'shopId': shopId,
+      // 'shopId': shopId,
       'productId': productId,
       // 'shopProductId': shopProductId,
       'productName': productName,
@@ -33,7 +33,7 @@ class ShopProduct {
   }
 
   ShopProduct.fromJson(Map<String, dynamic> data) {
-    this.shopId = data['shopId'];
+    // this.shopId = data['shopId'];
     this.productId = data['productId'];
     this.productName = data['productName'];
     this.price = data['price'];
@@ -184,20 +184,20 @@ class _NoteProdectEditListState extends State<NoteProdecEditListView> {
 
   @override
   Widget build(BuildContext context) {
+    List<NoteProdectEditView> views = new List();
+    for (var item in this._shopProductList) {
+      if (!_isEdit && item.num[this._noteProductType.index] <= 0) continue;
+      views.add(NoteProdectEditView(item, _calcTotalPrice, 
+            this._noteProductType, this._isEdit));
+    }
+
     return Container(
       decoration: BoxDecoration(
         border: Border.all(width: 1, color: Colors.grey)
       ),
-      
-      child: ListView.builder(
+      child: ListView(
         padding: EdgeInsets.all(10.0),
-        itemCount: _shopProductList.length,
-        // separatorBuilder: (context, index) => Divider(height: 1,),
-        itemBuilder: (context, index) {
-          if (!_isEdit && _shopProductList[index].num[this._noteProductType.index] <= 0) return null;
-          return NoteProdectEditView(_shopProductList[index], _calcTotalPrice, 
-            this._noteProductType, this._isEdit);
-        },
+        children: views,
       ),
     );
   }

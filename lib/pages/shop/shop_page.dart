@@ -170,7 +170,7 @@ class _ShopPageState extends State<ShopPage> {
               'productId': _product['product']['id'].toString(),
               'productName': _product['product']['name'],
               'price': double.parse(_product['price']),
-              'type': 1,
+              'type': _product['productType'],
               'deliverNum': _product['deliverNum'],
               'rejectNum': _product['rejectNum'],
               'giftNum': _product['giftNum']

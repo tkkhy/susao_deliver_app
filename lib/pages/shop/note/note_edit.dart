@@ -4,6 +4,7 @@ import 'package:flustars/flustars.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:select_dialog/select_dialog.dart';
+import 'package:susao_deliver_app/beans/gift_rule.dart';
 import 'package:susao_deliver_app/const.dart';
 import 'package:susao_deliver_app/utils/http_utils.dart';
 import 'package:susao_deliver_app/pages/loading.dart';
@@ -34,6 +35,7 @@ class _CommonNoteState extends State<CommonNotePage> {
   String _shopName;
   List<ShopProduct> _shopProductList;
   List<ShopProduct> _otherProductList;
+  GiftRuleUtil _giftRuleUtil;
   PayResult _payResult;
   double _totalPrice;
   double _deliverPrice;
@@ -64,6 +66,7 @@ class _CommonNoteState extends State<CommonNotePage> {
 
   @override
   void initState() {
+    calcTotalPrice();
     super.initState();
   }
 
@@ -128,6 +131,15 @@ class _CommonNoteState extends State<CommonNotePage> {
 
       return loadingBox();
     } else {
+      if(this._giftRuleUtil == null) {
+        HttpUtil().get(context, '/gift/api/gift', 
+        {'shopId': _shopId},
+        (rj) {
+          setState(() {
+            this._giftRuleUtil = GiftRuleUtil.fromJson(rj.result);
+          });
+        }, null, null, null);
+      }
       return Flex(
         direction: Axis.vertical,
         children: <Widget>[
@@ -160,11 +172,12 @@ class _CommonNoteState extends State<CommonNotePage> {
                 ),
                 RaisedButton(
                   child: Text('下单'),
-                  onPressed: () {
+                  onPressed: this._giftRuleUtil == null?null: () {
                     // _commitNote();
+                    List<ShopProduct> productAndGiftList = this._giftRuleUtil.getGift(_shopProductList);
                     String _url = '/shop/note/confirm?'
                       + 'shopId=$_shopId&shopName=${Uri.encodeComponent(_shopName)}'
-                      + '&products=${Uri.encodeComponent(jsonEncode(_shopProductList))}';
+                      + '&products=${Uri.encodeComponent(jsonEncode(productAndGiftList))}';
                     if (this._noteId != null) {
                       _url += '&noteId=${this._noteId}';
                     }
