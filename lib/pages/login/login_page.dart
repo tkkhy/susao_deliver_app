@@ -72,7 +72,7 @@ class LoginPageState extends State<LoginPage> {
         'client_secret': Config.tokenClientSecret
       },
       (data) {
-        Routes.router.navigateTo(context, '/index');
+        Routes.router.navigateTo(context, '/index', replace: true);
       },
       (data) {          
         showDialog(

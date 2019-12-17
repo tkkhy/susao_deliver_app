@@ -93,7 +93,7 @@ class _NewShopState extends State<NewShopPage> {
       }, 
       (rj) {
         Routes.router.navigateTo(context, '/shop?shopId=${rj.result['id'].toString()}'
-          + '&shopName=${Uri.encodeComponent(rj.result['name'])}');       
+          + '&shopName=${Uri.encodeComponent(rj.result['name'])}', replace: true);       
       }, null, null, null);
   }
 }
