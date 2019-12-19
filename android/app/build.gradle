@@ -43,11 +43,11 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.example.susao_deliver_app"
-        minSdkVersion 16
+        minSdkVersion 18
         targetSdkVersion 28
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [
             BAIDU_MAP_KEY : "AlcWL2xFa5sQxn1zfWv84vMFaZhAf3ZE",
         ]
@@ -78,6 +78,17 @@ flutter {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
+}
+
+allprojects {
+    configurations.all {
+        resolutionStrategy.force "androidx.interpolator:interpolator:1.0.0",
+            "androidx.arch.core:core-runtime:2.0.0",
+            "androidx.core:core:1.1.0",
+            "androidx.legacy:legacy-support-core-utils:1.0.0",
+            "androidx.legacy:legacy-support-core-ui:1.0.0",
+            "androidx.fragment:fragment:1.0.0"
+    }
 }

@@ -38,7 +38,11 @@ class ShopListState extends State<ShopListPage> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
-          Routes.router.navigateTo(context, '/shop/create');
+          Routes.router.navigateTo(context, '/shop/create').then((onValue){
+            setState(() {
+              _data = null;
+            });
+          });
         },
       ),
     );

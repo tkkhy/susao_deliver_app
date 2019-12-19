@@ -214,8 +214,9 @@ class _NoteConfirmState extends State<NoteConfirmPage> {
       '/note/api/note',
       data,
       (rj) {
-        toastSuccess('订单完成');
-        Routes.router.navigateTo(context, '/index?', clearStack: true);
+        // toastSuccess('订单完成');
+        // Routes.router.navigateTo(context, '/index?', clearStack: true);
+        Routes.router.navigateTo(context, '/note/print');
       },
       null,
       null,

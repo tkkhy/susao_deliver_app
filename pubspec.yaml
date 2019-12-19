@@ -39,6 +39,9 @@ dependencies:
   badges: ^1.1.0
   select_dialog: 1.0.6+1
   json_annotation: ^2.0.0
+  pull_to_refresh: ^1.5.7
+  blue_thermal_printer: ^1.0.9
+
 
 dev_dependencies:
   flutter_test:

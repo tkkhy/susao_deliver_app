@@ -10,6 +10,7 @@ class ShopProduct {
   // String shopId;
   String productId;
   String productName;
+  String code;
   double price;
   int type; // 0-临时商品 1-商家商品
   List<int> num = [0, 0, 0];
@@ -20,6 +21,7 @@ class ShopProduct {
       'productId': productId,
       // 'shopProductId': shopProductId,
       'productName': productName,
+      'code': code,
       'price': price,
       'type': type,
       'deliverNum': num[0],
@@ -36,8 +38,45 @@ class ShopProduct {
     // this.shopId = data['shopId'];
     this.productId = data['productId'];
     this.productName = data['productName'];
+    this.code = data['code'];
     this.price = data['price'];
     this.type = data['type'];
+    this.num[0] = _cvtNum(data['deliverNum']);
+    this.num[1] = _cvtNum(data['rejectNum']);
+    this.num[2] = _cvtNum(data['giftNum']);
+  }
+
+  ShopProduct.fromJsonOfProduct(Map<String, dynamic> data) {
+    // this.shopId = data['shopId'];
+    this.productId = data['id'].toString();
+    this.productName = data['name'];
+    this.code = data['code'];
+    this.price = double.parse(data['price']);
+    this.type = 0;
+    this.num[0] = 0;
+    this.num[1] = 0;
+    this.num[2] = 0;
+  }
+
+  ShopProduct.fromJsonOfShopProduct(Map<String, dynamic> data) {
+    // this.shopId = data['shopId'];
+    this.productId = data['product']['id'].toString();
+    this.productName = data['product']['name'];
+    this.code = ObjectUtil.isEmptyString(data['code'])?data['product']['code']:data['code'];
+    this.price = double.parse(data['price']);
+    this.type = 1;
+    this.num[0] = 0;
+    this.num[1] = 0;
+    this.num[2] = 0;
+  }
+
+  ShopProduct.fromJsonOfNoteProduct(Map<String, dynamic> data) {
+    // this.shopId = data['shopId'];
+    this.productId = data['product']['id'].toString();
+    this.productName = data['product']['name'];
+    this.code = data['code'];
+    this.price = double.parse(data['price']);
+    this.type = data['productType'];
     this.num[0] = _cvtNum(data['deliverNum']);
     this.num[1] = _cvtNum(data['rejectNum']);
     this.num[2] = _cvtNum(data['giftNum']);

@@ -5,6 +5,7 @@ import 'package:susao_deliver_app/const.dart';
 import 'package:susao_deliver_app/pages/shop/new_shop_page.dart';
 import 'package:susao_deliver_app/pages/shop/note/note_confirm.dart';
 import 'package:susao_deliver_app/pages/shop/note/note_edit.dart';
+import 'package:susao_deliver_app/pages/shop/note/note_print.dart';
 import 'package:susao_deliver_app/pages/shop/note/note_product.dart';
 import 'package:susao_deliver_app/pages/shop/note/pay_editor.dart';
 import 'package:susao_deliver_app/pages/shop/shop_page.dart';
@@ -82,6 +83,9 @@ class Routes {
         payResult.card = joPayResult['card'];
       }
       return NoteConfirmPage(noteId, shopId, shopName, products, payResult, isEdit: isEdit,);
+    }));
+    router.define("/note/print", handler: Handler(handlerFunc: (context, params){
+      return NotePrintPage();
     }));
   }
 

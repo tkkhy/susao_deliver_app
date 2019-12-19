@@ -165,16 +165,7 @@ class _ShopPageState extends State<ShopPage> {
         var joProducts = rj.result['products'];
         List shopProductList = new List<ShopProduct>();
         for (var _product in joProducts) {
-          shopProductList.add(ShopProduct.fromJson({
-              'shopId': _shopId,
-              'productId': _product['product']['id'].toString(),
-              'productName': _product['product']['name'],
-              'price': double.parse(_product['price']),
-              'type': _product['productType'],
-              'deliverNum': _product['deliverNum'],
-              'rejectNum': _product['rejectNum'],
-              'giftNum': _product['giftNum']
-            }));
+          shopProductList.add(ShopProduct.fromJsonOfNoteProduct(_product));
         }
 
         PayResult payResult = new PayResult();
@@ -213,23 +204,11 @@ class _ShopPageState extends State<ShopPage> {
         (rj) {
           List _shopProductList = new List<ShopProduct>();
           for (var _product in rj.result['shopProducts']) {
-            _shopProductList.add(ShopProduct.fromJson({
-              'shopId': _shopId,
-              'productId': _product['product']['id'].toString(),
-              'productName': _product['product']['name'],
-              'price': double.parse(_product['price']),
-              'type': 1
-            }));
+            _shopProductList.add(ShopProduct.fromJsonOfShopProduct(_product));
           }
           List _otherProductList = new List<ShopProduct>();
           for (var _product in rj.result['otherProducts']) {
-            _otherProductList.add(ShopProduct.fromJson({
-              'shopId': _shopId,
-              'productId': _product['id'].toString(),
-              'productName': _product['name'],
-              'price': double.parse(_product['price']),
-              'type': 0
-            }));
+            _otherProductList.add(ShopProduct.fromJsonOfProduct(_product));
           }
 
           Routes.router.navigateTo(context, '/shop/note?'
