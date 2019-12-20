@@ -2,6 +2,7 @@ import 'package:badges/badges.dart';
 import 'package:flustars/flustars.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:susao_deliver_app/beans/note_ticket.dart';
 import 'package:susao_deliver_app/const.dart';
 import 'package:susao_deliver_app/utils/http_utils.dart';
 import 'package:susao_deliver_app/pages/shop/note/pay_editor.dart';
@@ -214,9 +215,10 @@ class _NoteConfirmState extends State<NoteConfirmPage> {
       '/note/api/note',
       data,
       (rj) {
-        // toastSuccess('订单完成');
-        // Routes.router.navigateTo(context, '/index?', clearStack: true);
-        Routes.router.navigateTo(context, '/note/print');
+        toastSuccess('订单完成');
+        printNoteTicket(context, rj.result['noteId'].toString());
+        Routes.router.navigateTo(context, '/index?', clearStack: true);
+        // Routes.router.navigateTo(context, '/note/print');
       },
       null,
       null,

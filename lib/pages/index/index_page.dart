@@ -66,6 +66,13 @@ class IndexState extends State<IndexPage> {
         },
       ),
       ListTile(
+        title: Text('打印机'),
+        onTap: () {
+          Navigator.pop(context);
+          Routes.router.navigateTo(context, '/printer');
+        },
+      ),
+      ListTile(
         title: Text('商家列表'),
         onTap: () {
           Navigator.pop(context);

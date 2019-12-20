@@ -1,5 +1,8 @@
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:susao_deliver_app/common/printer.dart';
 import 'package:susao_deliver_app/pages/shop/note/note_product.dart';
+import 'package:susao_deliver_app/utils/http_utils.dart';
 
 class ShopInfo {
   String id;
@@ -9,7 +12,7 @@ class ShopInfo {
   String phoneNumber;
 
   ShopInfo.fromJson(data) {
-    this.id = data['id'];
+    this.id = data['id'].toString();
     this.name = data['name'];
     this.address = data['address'];
     this.contact = data['contact'];
@@ -31,7 +34,7 @@ class NoteInfo {
   String noteTime;
 
   NoteInfo.fromJson(data) {
-    this.id = data['id'];
+    this.id = data['id'].toString();
     this.noteMsg = data['noteMsg'];
     this.totalPrice = data['totalPrice'];
     this.actualPrice = data['actualPrice'];
@@ -59,15 +62,35 @@ class NoteTicket {
   }
 
   // 575像素
-  void print(BlueThermalPrinter bluetooth) {
+  void print() {
+    
+
+    var printer = Printer.instance.printer;
     // 订单id
-    bluetooth.printCustom("${this.shop.id}-${this.note.id}", 0, 0);
+    // printer.printCustom("${this.shop.id}-${this.note.id}", 0, 0);
+    // printer.printNewLine();
     // 头部
-    bluetooth.printCustom("徐州苏嫂食品有限公司送货单", 3, 1);
-    bluetooth.printNewLine();
-    // 客户信息、时间
-    bluetooth.printCustom('客户名称：${this.shop.name}', 0, 1);
-    bluetooth.printCustom('客户地址：${this.shop.address}', 0, 1);
+    printer.printCustom("徐州苏嫂食品有限公司送货单", 3, 1);
+    // printer.printNewLine();
+    // // 客户信息、时间
+    // printer.printCustom('客户名称：${this.shop.name}', 0, 1);
+    // printer.printNewLine();
+    // printer.printCustom('客户地址：${this.shop.address}', 0, 1);
+    printer.printNewLine();
+    printer.printNewLine();
+    printer.paperCut();
     // 打印
   }
+}
+
+void printNoteTicket(BuildContext context, String noteId) {
+    HttpUtil().get(context, '/note/api/note', {'noteId': "$noteId"},
+      (rj) {
+        NoteTicket nt = NoteTicket.fromJson(rj.result);
+        nt.print();
+      },
+      null,
+      null,
+      null);   
+  
 }

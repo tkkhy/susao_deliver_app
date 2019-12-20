@@ -17,6 +17,6 @@ void toastSuccess(String msg) {
     toastLength: Toast.LENGTH_SHORT,
     gravity: ToastGravity.BOTTOM,
     timeInSecForIos: 1,
-    backgroundColor: Colors.red,
+    backgroundColor: Colors.green,
     textColor: Colors.black);
 }
