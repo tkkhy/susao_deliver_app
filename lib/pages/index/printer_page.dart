@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/services.dart';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:susao_deliver_app/common/printer.dart';
 import 'package:susao_deliver_app/utils/toast_utils.dart';
 
@@ -13,11 +16,12 @@ class PrinterPage extends StatefulWidget {
 class _PrinterPageState extends State<PrinterPage> {
   List<BluetoothDevice> _devices = [];
   BluetoothDevice _device;
-  
+  String pathImage;
   @override
   void initState() {
     super.initState();
     initPrinterList();
+    initSavetoPath();
   }
 
   void initPrinterList() async {
@@ -36,6 +40,26 @@ class _PrinterPageState extends State<PrinterPage> {
       }
     });
   }
+
+  initSavetoPath()async{
+    //read and write
+    //image max 300px X 300px
+    final filename = 'yourlogo.png';
+    var bytes = await rootBundle.load("assets/images/yourlogo.png");
+    String dir = (await getApplicationDocumentsDirectory()).path;
+    writeToFile(bytes,'$dir/$filename');
+    setState(() {
+     pathImage='$dir/$filename';
+     print('pathImage: $pathImage');
+   });
+ }
+
+ //write to app path
+ Future<void> writeToFile(ByteData data, String path) {
+    final buffer = data.buffer;
+    return new File(path).writeAsBytes(
+        buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
+ }
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +100,12 @@ class _PrinterPageState extends State<PrinterPage> {
         RaisedButton(
           child: Text('测试打印机'),
           onPressed: Printer.instance.isConnected?Printer.instance.test:null,
+        ),
+        RaisedButton(
+          child: Text('打印图片'),
+          onPressed: Printer.instance.isConnected?(){
+            Printer.instance.testImage(pathImage);
+          }:null,
         ),
       ],
     );

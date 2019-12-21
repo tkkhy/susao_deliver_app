@@ -1,5 +1,7 @@
+import 'dart:convert';
+
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
-// import 'package:gbk2utf8/gbk2utf8.dart';
+import 'package:fast_gbk/fast_gbk.dart';
 import 'package:susao_deliver_app/utils/toast_utils.dart';
 
 /// 打印机
@@ -8,6 +10,8 @@ class Printer {
   BluetoothDevice _device;
   bool _connected;  // 连接成功
   bool _connecting; // 正在连接
+  String pathImage;
+  
   Printer._(){
     _connected = false;
     _connecting = false;  
@@ -108,6 +112,24 @@ class Printer {
    });
   }
 
+  String str2gbk(String str) {
+    // Uint8List bytes = Uint8List.fromList(gbk.encode(str));
+    // return bytes.toString();
+    print('code: ${str.codeUnits}');
+    List<int> gbkByte8 = gbk.encode(str);
+    List<int> gbkByte16 = List<int>.generate(gbkByte8.length ~/ 2, (index){
+      print('${gbkByte8[index * 2].toRadixString(16)}, ${gbkByte8[index * 2 + 1].toRadixString(16)}');
+      int b16 = (gbkByte8[index * 2]) + (gbkByte8[index * 2 + 1] << 8);
+      print('b16:$b16, ${b16.toRadixString(16)}');
+      return b16;
+    });
+    String text = String.fromCharCodes(gbkByte16);
+    // String text = convert.utf8.decode(gbkByte8);
+    // String text = Utf8Decoder().convert(gbkByte8);
+    print('text:$text');
+    return text;
+  }
+
   
   void test() async {
     //SIZE
@@ -121,14 +143,38 @@ class Printer {
     // 2- ESC_ALIGN_RIGHT
     printer.isConnected.then((isConnected) {
       if (isConnected) {
-        String text = "0.你好";
+        // String text = '    1.你好';
         // List<int> gbk_byteCodes = gbk.encode(text);
+        // // ByteBuffer.
+        // printer.writeBytes(gbk_byteCodes);
+        // StringCodec().decodeMessage(message)
+        // printer.printCustom(String.fromCharCodes(gbk_byteCodes),3,1);
         // String hex = '';
         // gbk_byteCodes.forEach((i) {hex += i.toRadixString(16)+ ' ';});
-        printer.printCustom(text,3,1);
+        printer.printCustom('', 3, 0);
+        printer.writeBytes(gbk.encode('你'));
         // printer.printNewLine();
         // printer.printQRcode("1.", 0, 0, 0);
+        // printer.printNewLine();
         printer.printNewLine();
+        printer.paperCut();
+      }
+   });
+  }
+
+  void testImage(img) async {
+    //SIZE
+    // 0- normal size text
+    // 1- only bold text
+   // 2- bold with medium text
+   // 3- bold with large text
+   //ALIGN
+   // 0- ESC_ALIGN_LEFT
+   // 1- ESC_ALIGN_CENTER
+    // 2- ESC_ALIGN_RIGHT
+    printer.isConnected.then((isConnected) {
+      if (isConnected) {
+        printer.printImage(img);
         printer.printNewLine();
         printer.paperCut();
       }

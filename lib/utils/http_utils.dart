@@ -55,6 +55,12 @@ class HttpUtil {
 
   var _dio;
 
+  Map<String, String> getToken() {
+    return {
+      'authorization': _dio.options.headers['authorization']
+    };
+  }
+
   factory HttpUtil() => _getInstance();
   static HttpUtil get instance => _getInstance();
   static HttpUtil _instance;
@@ -90,6 +96,8 @@ class HttpUtil {
     }
     return _instance;
   }
+
+  
 
   void get(
     BuildContext context,
