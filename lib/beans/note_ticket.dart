@@ -180,8 +180,8 @@ class NoteTicket {
                         _calcSpace('单价', 1, tableNameRatio),
                         _calcSpace('数量', 1, tableNameRatio),
                         _calcSpace('金额', 1, tableNameRatio),
-                        _calcSpace('编码', 1, tableNameRatio),];
-    String text = _genTextCenter(['商品名称', '单价', '数量', '金额', '编码'], spaces);
+                        _calcSpace('条码', 1, tableNameRatio),];
+    String text = _genTextCenter(['商品名称', '单价', '数量', '金额', '条码'], spaces);
     _printMsg(text, 1, 1);
   }
 
@@ -189,7 +189,7 @@ class NoteTicket {
     if (products[productIndex].num[typeIndex] <=0 ) return;
     int maxNameSize = 12;
     ShopProduct product = products[productIndex];
-    String name = '$productIndex.${product.productName}';
+    String name = '${productIndex+1}.${product.productName}';
     int nameLines = (name.length + maxNameSize - 1) ~/ maxNameSize;
     
     for (int lineNo=0; lineNo<nameLines; ++lineNo) {

@@ -103,10 +103,10 @@ class _CommonNoteState extends State<CommonNotePage> {
     SelectDialog.showModal<String>(context,
       label: '选择客户',
       items: List.generate(_otherProductList.length, (index) {
-        return '$index.${_otherProductList[index].productName}';
+        return '${index+1}.${_otherProductList[index].productName}';
       }),
       onChange: (String selected) {
-        int index = int.parse(selected.substring(0,selected.indexOf('.')));
+        int index = int.parse(selected.substring(0,selected.indexOf('.'))) - 1;
         setState(() {
           ShopProduct sp = _otherProductList.removeAt(index);
           // _shopProductList.insert(0, sp);
