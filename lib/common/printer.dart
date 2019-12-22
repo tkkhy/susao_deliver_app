@@ -40,9 +40,9 @@ class Printer {
   bool get isConnection => _connecting;
   int get width => 550;
   int textSize(int size) {
-    if (size == 0) return 24;
-    if (size == 1) return 30;
-    if (size == 2) return 34;
+    if (size == 0) return 14;
+    if (size == 1) return 24;
+    if (size == 2) return 30;
     if (size == 3) return 38;
     return 0;
   }

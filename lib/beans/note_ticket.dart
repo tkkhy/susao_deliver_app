@@ -63,10 +63,11 @@ class NoteTicket {
   NoteInfo note;
   List<ShopProduct> products;
 
-  static double tableNameRatio = 0.4;
-  static double tablePriceRatio = 0.2;
-  static double tableNumRatio = 0.2;
-  static double tableTotalRatio = 0.2;
+  static double tableNameRatio = 0.5;
+  static double tablePriceRatio = 0.1;
+  static double tableNumRatio = 0.1;
+  static double tableTotalRatio = 0.1;
+  static double tableCodeRatio = 0.2;
 
   NoteTicket.fromJson(data) {
     this.note = NoteInfo.fromJson(data['note']);
@@ -142,7 +143,7 @@ class NoteTicket {
     int width = (Printer.instance.width * ratio).floor();
     int textWidth = text.length * Printer.instance.textSize(size);
     int spaceWidth = ((width - textWidth) / Printer.instance.textSize(size)).floor();
-    return max(0, spaceWidth) * 2;
+    return max(0, spaceWidth);
   }
 
   String _genSpace(int size) {
@@ -178,37 +179,40 @@ class NoteTicket {
     List<int> spaces = [_calcSpace('商品名称', 1, tableNameRatio),
                         _calcSpace('单价', 1, tableNameRatio),
                         _calcSpace('数量', 1, tableNameRatio),
-                        _calcSpace('金额', 1, tableNameRatio),];
-    String text = _genTextCenter(['商品名称', '单价', '数量', '金额'], spaces);
+                        _calcSpace('金额', 1, tableNameRatio),
+                        _calcSpace('编码', 1, tableNameRatio),];
+    String text = _genTextCenter(['商品名称', '单价', '数量', '金额', '编码'], spaces);
     _printMsg(text, 1, 1);
   }
 
   void _printProduct(typeIndex, productIndex) {
     if (products[productIndex].num[typeIndex] <=0 ) return;
-    const int maxNameSize = 12;
+    int maxNameSize = 12;
     ShopProduct product = products[productIndex];
-    String name = '$productIndex' + product.productName;
+    String name = '$productIndex.${product.productName}';
     int nameLines = (name.length + maxNameSize - 1) ~/ maxNameSize;
     
     for (int lineNo=0; lineNo<nameLines; ++lineNo) {
-      int len = (name.length - lineNo*maxNameSize) % maxNameSize;
+      int len = (lineNo == nameLines-1)?(name.length%maxNameSize):maxNameSize;
       String text = name.substring(lineNo*maxNameSize, len);
       if (lineNo == 0) {
         List<String> texts = [
           text, '${product.price}/${product.unit}',
           '${product.num[typeIndex]}${product.unit}',
-          '${(product.num[typeIndex] * product.price).toStringAsFixed(2)}'
+          '${(product.num[typeIndex] * product.price).toStringAsFixed(2)}',
+          '${product.code??""}'
         ];
         List<int> spaces = [_calcSpace(texts[0], 0, tableNameRatio),
                             _calcSpace(texts[1], 0, tableNameRatio),
                             _calcSpace(texts[2], 0, tableNameRatio),
-                            _calcSpace(texts[3], 0, tableNameRatio),];
-        text = _genTextLeft([texts[0], texts[1], texts[2], texts[3]], spaces);
+                            _calcSpace(texts[3], 0, tableNameRatio),
+                            _calcSpace(texts[4], 0, tableNameRatio),];
+        text = _genTextLeft(texts, spaces);
       }
       _printMsg(text, 0, 0);
-      if (!ObjectUtil.isEmptyString(product.code)) {
-        _printMsg('${product.code??""}', 0, 0);
-      }
+      // if (!ObjectUtil.isEmptyString(product.code)) {
+      //   _printMsg('${product.code??""}', 0, 0);
+      // }
     }
   }
 
