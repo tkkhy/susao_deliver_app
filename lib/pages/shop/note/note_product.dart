@@ -12,6 +12,7 @@ class ShopProduct {
   String productName;
   String code;
   double price;
+  String unit;
   int type; // 0-临时商品 1-商家商品
   List<int> num = [0, 0, 0];
 
@@ -23,6 +24,7 @@ class ShopProduct {
       'productName': productName,
       'code': code,
       'price': price,
+      'unit': unit,
       'type': type,
       'deliverNum': num[0],
       'rejectNum': num[1],
@@ -40,6 +42,7 @@ class ShopProduct {
     this.productName = data['productName'];
     this.code = data['code'];
     this.price = data['price'];
+    this.unit = data['unit'];
     this.type = data['type'];
     this.num[0] = _cvtNum(data['deliverNum']);
     this.num[1] = _cvtNum(data['rejectNum']);
@@ -52,6 +55,7 @@ class ShopProduct {
     this.productName = data['name'];
     this.code = data['code'];
     this.price = double.parse(data['price']);
+    this.unit = data['unit'];
     this.type = 0;
     this.num[0] = 0;
     this.num[1] = 0;
@@ -64,6 +68,7 @@ class ShopProduct {
     this.productName = data['product']['name'];
     this.code = ObjectUtil.isEmptyString(data['code'])?data['product']['code']:data['code'];
     this.price = double.parse(data['price']);
+    this.unit = data['product']['unit'];
     this.type = 1;
     this.num[0] = 0;
     this.num[1] = 0;
@@ -76,6 +81,7 @@ class ShopProduct {
     this.productName = data['product']['name'];
     this.code = data['code'];
     this.price = double.parse(data['price']);
+    this.unit = data['product']['unit'];
     this.type = data['productType'];
     this.num[0] = _cvtNum(data['deliverNum']);
     this.num[1] = _cvtNum(data['rejectNum']);

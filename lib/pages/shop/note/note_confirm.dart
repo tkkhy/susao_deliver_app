@@ -216,8 +216,8 @@ class _NoteConfirmState extends State<NoteConfirmPage> {
       data,
       (rj) {
         toastSuccess('订单完成');
-        printNoteTicketRemote(context, rj.result['ticket']);
-        // printNoteTicketLocal(context, rj.result['noteId'].toString());
+        // printNoteTicketRemote(context, rj.result['ticket']);
+        printNoteTicketLocal(context, rj.result['noteId'].toString());
         // Routes.router.navigateTo(context, '/index?', clearStack: true);
         // Routes.router.navigateTo(context, '/note/print');
       },

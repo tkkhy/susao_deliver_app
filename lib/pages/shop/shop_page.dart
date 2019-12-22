@@ -124,7 +124,7 @@ class _ShopPageState extends State<ShopPage> {
 
   Widget _buildNoteView(note) {
     return ListTile(
-      title: Text(note['noteTime']),
+      title: Text(note['create_time']),
       subtitle: Text(deliverNoteStatus[note['status']]),
       trailing: note['status'] == 0?IconButton(
         icon: Icon(Icons.delete),

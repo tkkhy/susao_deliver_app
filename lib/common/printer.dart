@@ -38,6 +38,14 @@ class Printer {
   BlueThermalPrinter get printer => _bluetooth;
   bool get isConnected => _connected;
   bool get isConnection => _connecting;
+  int get width => 550;
+  int textSize(int size) {
+    if (size == 0) return 24;
+    if (size == 1) return 30;
+    if (size == 2) return 34;
+    if (size == 3) return 38;
+    return 0;
+  }
 
   Future<bool> _connect(BluetoothDevice _d) async {
     return printer.connect(_d).then((onValue){
@@ -81,7 +89,7 @@ class Printer {
     }
   }
   
-  void _test() async {
+  void test() async {
     //SIZE
     // 0- normal size text
     // 1- only bold text
@@ -131,7 +139,7 @@ class Printer {
   }
 
   
-  void test() async {
+  void _test() async {
     //SIZE
     // 0- normal size text
     // 1- only bold text
