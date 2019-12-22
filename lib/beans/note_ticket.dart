@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:fast_gbk/fast_gbk.dart';
+import 'package:flustars/flustars.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:image_downloader/image_downloader.dart';
 import 'package:susao_deliver_app/common/printer.dart';
@@ -201,7 +202,9 @@ class NoteTicket {
         text = _genTextLeft([texts[0], texts[1], texts[2], texts[3]], spaces);
       }
       _printMsg(text, 0, 0);
-      _printMsg('${product.code??""}', 0, 0);
+      if (!ObjectUtil.isEmptyString(product.code)) {
+        _printMsg('${product.code??""}', 0, 0);
+      }
     }
   }
 

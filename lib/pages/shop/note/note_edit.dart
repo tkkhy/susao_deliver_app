@@ -59,9 +59,11 @@ class _CommonNoteState extends State<CommonNotePage> {
       _d += _shop.price * _shop.num[0]??0;
       _r += _shop.price * _shop.num[1]??0;
     }
-    _deliverPrice = NumUtil.getNumByValueDouble(_d, 2);
-    _rejectPrice = NumUtil.getNumByValueDouble(_r, 2);
-    _totalPrice = NumUtil.getNumByValueDouble(_d - _r, 2);
+    setState(() {
+      _deliverPrice = NumUtil.getNumByValueDouble(_d, 2);
+      _rejectPrice = NumUtil.getNumByValueDouble(_r, 2);
+      _totalPrice = NumUtil.getNumByValueDouble(_d - _r, 2);
+    });
   }
 
   @override
