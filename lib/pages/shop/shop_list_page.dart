@@ -91,12 +91,16 @@ class ShopListState extends State<ShopListPage> {
         },
         itemBuilder: (BuildContext context, int index) {
           var shop = _data.result['shops'][index];
+          var url = '/shop?shopId=${shop['id'].toString()}&shopName=${Uri.encodeComponent(shop['name'])}';
+          if (!ObjectUtil.isEmptyString(planId)) {
+            url += "&planId=$planId";
+          }
           return ListTile(
             title: Text(shop['name']),
             subtitle: Text(shop['address']),
             trailing: Text(((shop['distance'] / 1000).toStringAsFixed(2)??'-') + ' KM'),
             onTap: () {
-              Routes.router.navigateTo(context, '/shop?shopId=${shop['id'].toString()}&shopName=${Uri.encodeComponent(shop['name'])}');
+              Routes.router.navigateTo(context, url);
             },
           );
         },

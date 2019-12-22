@@ -15,17 +15,18 @@ class NoteConfirmPage extends StatefulWidget {
   String _noteId;
   String _shopId;
   String _shopName;
+  String _planId;
   List<ShopProduct> _shopProductList;
   bool _isEdit;
   PayResult _payResult;
 
-  NoteConfirmPage(this._noteId, this._shopId, this._shopName, this._shopProductList, this._payResult, {isEdit:true}) {
+  NoteConfirmPage(this._noteId, this._shopId, this._shopName, this._shopProductList, this._payResult, this._planId, {isEdit:true}) {
     this._isEdit = isEdit;
   }
 
   @override
   State<StatefulWidget> createState() => _NoteConfirmState(
-    this._noteId, this._shopId, this._shopName, this._shopProductList, this._payResult, this._isEdit
+    this._noteId, this._shopId, this._shopName, this._shopProductList, this._payResult, this._planId, this._isEdit
   );
   
 }
@@ -35,6 +36,7 @@ class _NoteConfirmState extends State<NoteConfirmPage> {
   String _noteId;
   String _shopId;
   String _shopName;
+  String _planId;
   List<ShopProduct> _shopProductList;
   double _totalPrice;
   double _deliverPrice;
@@ -51,7 +53,7 @@ class _NoteConfirmState extends State<NoteConfirmPage> {
   static final double _fontSize = ScreenUtil().getWidth(15);
 
   _NoteConfirmState(this._noteId, this._shopId, this._shopName, this._shopProductList,
-    this._payResult, this._isEdit);
+    this._payResult, this._planId, this._isEdit);
 
   @override
   void initState() {
@@ -206,8 +208,11 @@ class _NoteConfirmState extends State<NoteConfirmPage> {
         'bookkeeping': double.parse(_bookkeepingCtl.text),
         'products': _products,
     };
-    if (this._noteId != null && this._noteId != '') {
+    if (!ObjectUtil.isEmptyString(this._noteId)) {
       data['noteId'] = this._noteId;
+    }
+    if (!ObjectUtil.isEmptyString(this._planId)) {
+      data['planId'] = this._planId;
     }
 
     HttpUtil().post(

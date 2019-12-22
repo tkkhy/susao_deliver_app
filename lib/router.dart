@@ -31,12 +31,14 @@ class Routes {
     router.define('/shop', handler: Handler(handlerFunc: (context, params) {
       var shopId = params['shopId']?.first;
       var shopName = params['shopName']?.first;
-      return ShopPage(shopId, shopName);
+      var planId = params['shopId']?.first;
+      return ShopPage(shopId, shopName, planId);
     }));
     router.define('/shop/note', handler: Handler(handlerFunc: (context, params) {
       String noteId = params['noteId']?.first;
       var shopId = params['shopId']?.first;
       var shopName = params['shopName']?.first;
+      var planId = params['planId']?.first;
       
       var joProducts = jsonDecode(params['products']?.first);
       List<ShopProduct> products = new List();
@@ -59,13 +61,14 @@ class Routes {
         payResult.zhifubao = joPayResult['zhifubao'];
         payResult.card = joPayResult['card'];
       }
-      return CommonNotePage(noteId, shopId, shopName, products, others, payResult);
+      return CommonNotePage(noteId, shopId, shopName, products, others, payResult, planId);
     }));
     router.define('/shop/note/confirm', handler: Handler(handlerFunc: (context, params) {
       String noteId = params['noteId']?.first;
       bool isEdit = (params['isEdit']?.first) == 'false'?false:true;
       var shopId = params['shopId']?.first;
       var shopName = params['shopName']?.first;
+      var planId = params['planId']?.first;
       var joProducts = jsonDecode(params['products']?.first);
       List<ShopProduct> products = new List();
       for (var jo in joProducts) {
@@ -81,7 +84,7 @@ class Routes {
         payResult.zhifubao = joPayResult['zhifubao'];
         payResult.card = joPayResult['card'];
       }
-      return NoteConfirmPage(noteId, shopId, shopName, products, payResult, isEdit: isEdit,);
+      return NoteConfirmPage(noteId, shopId, shopName, products, payResult, planId, isEdit: isEdit,);
     }));
     router.define('/printer', handler: Handler(handlerFunc: (context, params){
       return PrinterPage();

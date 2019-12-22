@@ -28,6 +28,7 @@ class ShopInfo {
 
 class NoteInfo {
   String id;
+  String code;
   String noteMsg;
   String totalPrice;
   String actualPrice;
@@ -42,6 +43,7 @@ class NoteInfo {
 
   NoteInfo.fromJson(data) {
     this.id = data['id'].toString();
+    this.code = data['code'];
     this.noteMsg = data['noteMsg'];
     this.totalPrice = data['totalPrice'];
     this.actualPrice = data['actualPrice'];
@@ -92,7 +94,7 @@ class NoteTicket {
     // 客户信息、时间
     _printMsg('客户名称：${this.shop.name}', 0, 0);
     _printMsg('客户地址：${this.shop.address}', 0, 0);
-    _printMsg('订单编号：TODO', 0, 0);
+    _printMsg('订单编号：${this.note.code}', 0, 0);
     _printMsg('订单时间：${this.note.createTime}', 0, 0);
     _printMsg('送货人：${(this.note.createUser["last_name"])??""}${(this.note.createUser["first_name"])??""}', 0, 0);
     _printMsg('送货人电话：${(this.note.createUser["moble"])??""}', 0, 0);
@@ -129,6 +131,8 @@ class NoteTicket {
     _printMsg('记账金额：${note.bookkeeping}', 1, 0);
 
     printer.printNewLine();
+    printer.printNewLine();
+    printer.printCustom("################", 0, 1);
     printer.printNewLine();
     printer.paperCut();
     // 打印
@@ -193,7 +197,7 @@ class NoteTicket {
         List<String> texts = [
           text, '${product.price}/${product.unit}',
           '${product.num[typeIndex]}${product.unit}',
-          '${product.num[typeIndex] * product.price}'
+          '${(product.num[typeIndex] * product.price).toStringAsFixed(2)}'
         ];
         List<int> spaces = [_calcSpace(texts[0], 0, tableNameRatio),
                             _calcSpace(texts[1], 0, tableNameRatio),

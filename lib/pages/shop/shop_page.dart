@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flustars/flustars.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:susao_deliver_app/beans/note_ticket.dart';
 import 'package:susao_deliver_app/const.dart';
 import 'package:susao_deliver_app/pages/loading.dart';
 import 'package:susao_deliver_app/pages/shop/note/pay_editor.dart';
@@ -15,18 +16,20 @@ import 'package:url_launcher/url_launcher.dart';
 class ShopPage extends StatefulWidget {
   var shopId;
   var shopName;
-  ShopPage(this.shopId, this.shopName);
+  var planId;
+  ShopPage(this.shopId, this.shopName, this.planId);
 
   @override
-  State<StatefulWidget> createState() => _ShopPageState(this.shopId, this.shopName);
+  State<StatefulWidget> createState() => _ShopPageState(this.shopId, this.shopName, this.planId);
 }
 
 
 class _ShopPageState extends State<ShopPage> {
   var _shopId;
   var _shopName;
+  var _planId;
   ResultJson _shopInfo;
-  _ShopPageState(this._shopId, this._shopName);
+  _ShopPageState(this._shopId, this._shopName, this._planId);
 
   @override
   Widget build(BuildContext context) {
@@ -124,12 +127,16 @@ class _ShopPageState extends State<ShopPage> {
 
   Widget _buildNoteView(note) {
     return ListTile(
-      title: Text(note['create_time']),
-      subtitle: Text(deliverNoteStatus[note['status']]),
-      trailing: note['status'] == 0?IconButton(
+      title: Text('${note['create_time']}'),
+      subtitle: Text('编号:${note["code"]??""}\n状态:${deliverNoteStatus[note['status']]}'),
+      leading: note['status'] == 0?IconButton(
         icon: Icon(Icons.delete),
         onPressed: () => deleteNote(note),
       ):null,
+      trailing: IconButton(
+        icon: Icon(Icons.print),
+        onPressed: () => printNoteTicketLocal(context, note['id'].toString()),
+      ),
       onTap: () => this.showNoteDetail(note),
     );
   }
@@ -210,12 +217,16 @@ class _ShopPageState extends State<ShopPage> {
           for (var _product in rj.result['otherProducts']) {
             _otherProductList.add(ShopProduct.fromJsonOfProduct(_product));
           }
-
-          Routes.router.navigateTo(context, '/shop/note?'
+          String url = '/shop/note?'
             + 'shopId=$_shopId'
             + '&shopName=${Uri.encodeComponent(_shopName)}'
             + '&products=${Uri.encodeComponent(jsonEncode(_shopProductList))}'
-            + '&others=${Uri.encodeComponent(jsonEncode(_otherProductList))}');
+            + '&others=${Uri.encodeComponent(jsonEncode(_otherProductList))}';
+          if (!ObjectUtil.isEmptyString(_planId)) {
+            url += '&planId=$_planId';
+          }
+
+          Routes.router.navigateTo(context, url);
         },
         null, 
         null, 

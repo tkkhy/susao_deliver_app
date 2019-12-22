@@ -20,19 +20,21 @@ class CommonNotePage extends StatefulWidget {
   List<ShopProduct> _shopProductList;
   List<ShopProduct> _otherProductList;
   PayResult _payResult;
+  String _planId;
 
   CommonNotePage(this._noteId, this._shopId, this._shopName, 
-    this._shopProductList, this._otherProductList, this._payResult);
+    this._shopProductList, this._otherProductList, this._payResult, this._planId);
   @override
   State<StatefulWidget> createState() => _CommonNoteState(this._noteId, 
     this._shopId, this._shopName, this._shopProductList, 
-    this._otherProductList, this._payResult);
+    this._otherProductList, this._payResult, this._planId);
 }
 
 class _CommonNoteState extends State<CommonNotePage> {
   String _noteId;
   String _shopId;
   String _shopName;
+  String _planId;
   List<ShopProduct> _shopProductList;
   List<ShopProduct> _otherProductList;
   GiftRuleUtil _giftRuleUtil;
@@ -46,7 +48,7 @@ class _CommonNoteState extends State<CommonNotePage> {
   ];
 
   _CommonNoteState(this._noteId, this._shopId, this._shopName,
-    this._shopProductList, this._otherProductList, this._payResult) {
+    this._shopProductList, this._otherProductList, this._payResult, this._planId) {
     this._totalPrice = 0;
     this._deliverPrice = 0;
     this._rejectPrice = 0;
@@ -182,6 +184,9 @@ class _CommonNoteState extends State<CommonNotePage> {
                       + '&products=${Uri.encodeComponent(jsonEncode(productAndGiftList))}';
                     if (this._noteId != null) {
                       _url += '&noteId=${this._noteId}';
+                    }
+                    if (!ObjectUtil.isEmptyString(this._planId)) {
+                      _url += '&planId=${this._planId}';
                     }
                     Routes.router.navigateTo(context, _url);
                   },
