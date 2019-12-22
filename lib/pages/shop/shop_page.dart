@@ -36,6 +36,14 @@ class _ShopPageState extends State<ShopPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(this._shopName),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.assignment),
+            onPressed: () {
+              Routes.router.navigateTo(context, '/shop/edit?shopId=$_shopId');
+            },
+          )
+        ],
       ),
       body: _buildBody()
     );

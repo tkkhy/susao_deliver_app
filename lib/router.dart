@@ -2,11 +2,11 @@ import 'dart:convert';
 
 import 'package:fluro/fluro.dart';
 import 'package:susao_deliver_app/pages/index/printer_page.dart';
-import 'package:susao_deliver_app/pages/shop/new_shop_page.dart';
 import 'package:susao_deliver_app/pages/shop/note/note_confirm.dart';
 import 'package:susao_deliver_app/pages/shop/note/note_edit.dart';
 import 'package:susao_deliver_app/pages/shop/note/note_product.dart';
 import 'package:susao_deliver_app/pages/shop/note/pay_editor.dart';
+import 'package:susao_deliver_app/pages/shop/shop_edit.dart';
 import 'package:susao_deliver_app/pages/shop/shop_page.dart';
 
 import 'pages/404.dart';
@@ -22,7 +22,11 @@ class Routes {
 
     router.define('/login', handler: Handler(handlerFunc: (context, params) => LoginPage()));
     router.define('/index', handler: Handler(handlerFunc: (context, params) => IndexPage()));
-    router.define('/shop/create', handler: Handler(handlerFunc: (context, params) => NewShopPage()));
+    router.define('/shop/create', handler: Handler(handlerFunc: (context, params) => ShopEditPage()));
+    router.define('/shop/edit', handler: Handler(handlerFunc: (context, params) {
+      var shopId = params['shopId']?.first;
+      return ShopEditPage(shopId: shopId);
+    }));
     router.define('/shop_list', handler: Handler(handlerFunc: (context, params) {
       var planId = params['planId']?.first;
       var planName = params['planName']?.first;
