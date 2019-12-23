@@ -175,12 +175,16 @@ class _ShopPageState extends State<ShopPage> {
 
 
   void showNoteDetail(note) {
-    HttpUtil().get(context, '/note/api/note', {'noteId': "${note['id']}"},
+    HttpUtil().get(context, '/note/api/note', {'noteId': "${note['id']}", 'isEdit': 'true'},
       (rj) {
         var joProducts = rj.result['products'];
         List shopProductList = new List<ShopProduct>();
         for (var _product in joProducts) {
           shopProductList.add(ShopProduct.fromJsonOfNoteProduct(_product));
+        }
+        List _otherProductList = new List<ShopProduct>();
+        for (var _product in rj.result['others']) {
+          _otherProductList.add(ShopProduct.fromJsonOfProduct(_product));
         }
 
         PayResult payResult = new PayResult();
@@ -195,7 +199,8 @@ class _ShopPageState extends State<ShopPage> {
             + '&shopName=${Uri.encodeComponent(_shopName)}'
             + '&noteId=${note["id"]}'
             + '&products=${Uri.encodeComponent(jsonEncode(shopProductList))}'
-            + '&payResult=${Uri.encodeComponent(jsonEncode(payResult))}');
+            + '&payResult=${Uri.encodeComponent(jsonEncode(payResult))}'
+            + '&others=${Uri.encodeComponent(jsonEncode(_otherProductList))}');
         } else {
           Routes.router.navigateTo(context, '/shop/note/confirm?'
             + 'shopId=$_shopId'
