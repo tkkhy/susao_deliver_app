@@ -35,7 +35,7 @@ class Routes {
     router.define('/shop', handler: Handler(handlerFunc: (context, params) {
       var shopId = params['shopId']?.first;
       var shopName = params['shopName']?.first;
-      var planId = params['shopId']?.first;
+      var planId = params['planId']?.first;
       return ShopPage(shopId, shopName, planId);
     }));
     router.define('/shop/note', handler: Handler(handlerFunc: (context, params) {

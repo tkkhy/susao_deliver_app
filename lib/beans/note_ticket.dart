@@ -254,7 +254,11 @@ void printNoteTicketLocal(BuildContext context, String noteId) {
     HttpUtil().get(context, '/note/api/note', {'noteId': "$noteId"},
       (rj) {
         NoteTicket note = NoteTicket.fromJson(rj.result);
-        note.print();
+        try {
+          note.print();
+        } catch (e) {
+          toastError("打印失败");
+        }
       },
       null,
       null,
