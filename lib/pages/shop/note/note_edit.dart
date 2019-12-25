@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flustars/flustars.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lpinyin/lpinyin.dart';
 import 'package:select_dialog/select_dialog.dart';
 import 'package:susao_deliver_app/beans/gift_rule.dart';
 import 'package:susao_deliver_app/const.dart';
@@ -70,6 +71,15 @@ class _CommonNoteState extends State<CommonNotePage> {
 
   @override
   void initState() {
+    for (ShopProduct p in _otherProductList) {
+      try {
+        p.cache['ShortPinyin'] = PinyinHelper.getShortPinyin(p.productName);
+        p.cache['Pinyin'] = PinyinHelper.getPinyinE(p.productName);
+      } catch (e) {
+
+      }
+    }
+
     calcTotalPrice();
     super.initState();
   }
@@ -101,10 +111,29 @@ class _CommonNoteState extends State<CommonNotePage> {
   
   void addOtherProduct(BuildContext context) {
     SelectDialog.showModal<String>(context,
-      label: '选择客户',
+      label: '选择商品',
       items: List.generate(_otherProductList.length, (index) {
         return '${index+1}.${_otherProductList[index].productName}';
       }),
+      onFind: (String query) {
+        return Future<List<String>>(() {
+          List<String> _s = new List();
+          for (int idx=0; idx<_otherProductList.length; ++idx) {
+            ShopProduct p = _otherProductList[idx];
+            try {
+              if ( ObjectUtil.isEmptyString(query)
+                || (p.cache.containsKey('Pinyin') && p.cache['Pinyin'].contains(query))
+                || (p.cache.containsKey('ShortPinyin') && p.cache['ShortPinyin'].contains(query))
+                || p.productName.contains(query)) {
+                _s.add('${idx+1}.${p.productName}');  
+              }
+            } catch (e) {
+
+            }
+          }
+          return _s;
+        });
+      },
       onChange: (String selected) {
         int index = int.parse(selected.substring(0,selected.indexOf('.'))) - 1;
         setState(() {

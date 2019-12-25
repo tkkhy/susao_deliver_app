@@ -15,6 +15,7 @@ class ShopProduct {
   String unit;
   int type; // 0-临时商品 1-商家商品
   List<int> num = [0, 0, 0];
+  Map<String, dynamic> cache = new Map();
 
   Map<String, dynamic> toJson() {
     return {
