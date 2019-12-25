@@ -30,6 +30,8 @@ class NoteInfo {
   String id;
   String code;
   String noteMsg;
+  String deliverPrice;
+  String rejectPrice;
   String totalPrice;
   String actualPrice;
   String bookkeeping;
@@ -45,6 +47,8 @@ class NoteInfo {
     this.id = data['id'].toString();
     this.code = data['code'];
     this.noteMsg = data['noteMsg'];
+    this.deliverPrice = data['deliverPrice'];
+    this.rejectPrice = data['rejectPrice'];
     this.totalPrice = data['totalPrice'];
     this.actualPrice = data['actualPrice'];
     this.bookkeeping = data['bookkeeping'];
@@ -127,6 +131,8 @@ class NoteTicket {
     printer.printNewLine();
 
     // 订单金额
+    _printMsg('销售金额：${note.deliverPrice}', 1, 0);
+    _printMsg('退货金额：${note.rejectPrice}', 1, 0);
     _printMsg('合计金额：${note.totalPrice}', 1, 0);
     _printMsg('实收金额：${note.actualPrice}', 1, 0);
     _printMsg('记账金额：${note.bookkeeping}', 1, 0);

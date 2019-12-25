@@ -199,6 +199,8 @@ class _NoteConfirmState extends State<NoteConfirmPage> {
     var data = {
         'shopId': _shopId,
         'noteMsg': _msgCtl.text,
+        'deliverPrice': _deliverPrice,
+        'rejectPrice': _rejectPrice,
         'totalPrice': _totalPrice,
         'cash': this._payResult.cash??0,
         'weixin': this._payResult.weixin??0,
